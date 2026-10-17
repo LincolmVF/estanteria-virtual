@@ -73,3 +73,8 @@ h2 { font-size: 1.05rem; font-weight: 600; margin: 1.5rem 0 .6rem; }
 .tarjeta .balanza__valor { font-size: 1.6rem; }
 .tarjeta .botones { margin: .7rem 0 0; }
 .tarjeta .btn { padding: .35rem .7rem; font-size: .85rem; }
+
+/* --- Sincronización con backend / login --- */
+.login { display: grid; gap: .8rem; max-width: 24rem; margin: 2rem 0; }
+.login .botones { margin: .4rem 0 0; }
+.tarjeta__nombre { cursor: pointer; }

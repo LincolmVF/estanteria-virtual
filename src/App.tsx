@@ -1,37 +1,34 @@
-import { ShelfCard } from './components/shelf/ShelfCard';
-import { RequestLog } from './components/log/RequestLog';
-import { ESTANTERIAS } from './config/estanterias';
-import { useAlmacen } from './hooks/useAlmacen';
+import { Almacen } from './components/almacen/Almacen';
+import { LoginPanel } from './components/auth/LoginPanel';
+import { useProductos } from './hooks/useProductos';
 
 export default function App() {
-  const a = useAlmacen();
-  const criticas = a.estados.filter((e) => e.enPeligro).length;
+  const p = useProductos();
+  const { vista } = p;
 
-  return (
-    <main className="app">
-      <header className="cabecera">
+  if (vista.tipo === 'cargando') {
+    return <main className="app"><p className="nota">Cargando productos del backend…</p></main>;
+  }
+  if (vista.tipo === 'sin-sesion') {
+    return (
+      <LoginPanel mensaje={vista.mensaje} onEntrar={p.entrar}
+        onLocal={() => p.usarLocales('Sin sesión: se usan datos locales.')} />
+    );
+  }
+  if (vista.tipo === 'error') {
+    return (
+      <main className="app">
         <h1>Estanterías virtuales</h1>
-        <div className="resumen">
-          <label className="check">
-            <input type="checkbox" checked={a.auto} onChange={(e) => a.setAuto(e.target.checked)} />
-            Enviar señales solas
-          </label>
-          <button className="btn" onClick={a.reiniciarTodo}>Reiniciar todas</button>
-          <p className={`insignia ${criticas > 0 ? 'insignia--peligro' : ''}`}>
-            {criticas} de {ESTANTERIAS.length} en peso crítico
-          </p>
+        <p className="nota" role="alert">{vista.mensaje}</p>
+        <div className="botones">
+          <button className="btn btn--principal" onClick={p.sincronizar}>Reintentar</button>
+          <button className="btn" onClick={() => p.usarLocales(`${vista.mensaje} Se usan datos locales.`)}>Usar datos locales</button>
         </div>
-      </header>
-      <div className="rejilla">
-        {a.estados.map((e, i) => (
-          <ShelfCard key={e.cfg.id} estado={e}
-            ultima={a.entradas.find((x) => x.sensorId === e.cfg.sensorId)}
-            onProducto={(v) => a.setProducto(i, v)} onSacar={() => a.sacarCaja(i)}
-            onReponer={() => a.reponerCaja(i)} onEnviar={() => a.enviarAhora(i)} />
-        ))}
-      </div>
-      <h2 className="seccion">Respuestas del backend</h2>
-      <RequestLog entradas={a.entradas} />
-    </main>
+      </main>
+    );
+  }
+  return (
+    <Almacen key={p.version} productos={vista.productos} origen={vista.origen}
+      aviso={vista.aviso} onSincronizar={p.sincronizar} />
   );
 }
