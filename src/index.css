@@ -8,12 +8,11 @@ body { margin: 0; background: var(--fondo); color: var(--tinta);
   font-family: Bahnschrift, 'DIN Alternate', 'Segoe UI', system-ui, sans-serif; }
 h1 { font-size: 1.9rem; font-weight: 600; margin: 0; letter-spacing: -.01em; }
 h2 { font-size: 1.05rem; font-weight: 600; margin: 1.5rem 0 .6rem; }
-.app { max-width: 1080px; margin: 0 auto; padding: 1.5rem; }
+.app { max-width: 1400px; margin: 0 auto; padding: 1.5rem; }
 .cabecera { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
 .insignia { margin: 0; padding: .35rem .9rem; border-radius: 99px; background: var(--ok); color: #fff; font-weight: 600; transition: background .3s; }
 .insignia--peligro { background: var(--alarma); }
-.rejilla { display: grid; grid-template-columns: 1.4fr 1fr; gap: 2rem; margin-top: 1.5rem; align-items: start; }
-@media (max-width: 820px) { .rejilla { grid-template-columns: 1fr; } }
+.rejilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
 .escena, .panel { background: var(--papel); border-radius: 6px; padding: 1.5rem; }
 
 .estante { position: relative; padding-top: 3.2rem; }
@@ -21,9 +20,8 @@ h2 { font-size: 1.05rem; font-weight: 600; margin: 1.5rem 0 .6rem; }
   background: #9aa7ad; border-bottom: 5px solid var(--acero); transition: background .3s; }
 .baliza--activa { background: var(--alarma); animation: baliza 0.8s ease-in-out infinite alternate; }
 .estante--peligro .estante__tabla { border-color: var(--alarma); }
-.estante__fila { display: flex; align-items: flex-end; gap: 6px; min-height: 5.5rem; padding: 0 .8rem; }
-.caja { flex: 0 0 4.2rem; height: 4.5rem; background: var(--kraft); border: 2px solid var(--kraft-osc); border-radius: 3px;
-  position: relative; animation: caja-in .45s ease-out; }
+.estante__fila { display: grid; grid-template-columns: repeat(8, 1fr); gap: 3px; align-items: end; min-height: 3.4rem; padding: 0 .5rem; }
+.caja { aspect-ratio: 1 / 1.05; background: var(--kraft); border: 2px solid var(--kraft-osc); border-radius: 3px; position: relative; animation: caja-in .45s ease-out; }
 .caja::after { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 8px; transform: translateX(-50%); background: var(--kraft-osc); opacity: .55; }
 .caja--sale { animation: caja-out .5s ease-in forwards; }
 .estante__tabla { height: 1.6rem; background: var(--acero); border-bottom: 4px solid var(--acero); border-top: 4px solid transparent;
@@ -49,7 +47,7 @@ h2 { font-size: 1.05rem; font-weight: 600; margin: 1.5rem 0 .6rem; }
 .btn:focus-visible, input:focus-visible { outline: 3px solid var(--ok); outline-offset: 2px; }
 .check { display: flex; gap: .5rem; align-items: center; margin-bottom: 1rem; font-size: .9rem; }
 
-.log { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; }
+.log { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: .5rem; }
 .log li { background: var(--papel); border-radius: 4px; padding: .6rem .8rem; display: grid; gap: .2rem; }
 .log__texto { font-size: .9rem; }
 .estado { justify-self: start; padding: 0 .5rem; border-radius: 4px; color: #fff; font-weight: 600; font-size: .8rem; }
@@ -59,3 +57,19 @@ h2 { font-size: 1.05rem; font-weight: 600; margin: 1.5rem 0 .6rem; }
 @keyframes caja-out { to { transform: translate(0, -70px) scale(.9); opacity: 0; } }
 @keyframes baliza { to { box-shadow: 0 0 22px 8px rgba(214,55,43,.6); } }
 @media (prefers-reduced-motion: reduce) { .caja, .caja--sale, .baliza--activa { animation-duration: .01s; } }
+
+.resumen { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.resumen .check { margin: 0; }
+.seccion { margin-top: 2rem; }
+.tarjeta { background: var(--papel); border-radius: 6px; padding: 1rem; border: 2px solid transparent; transition: border-color .3s; }
+.tarjeta--peligro { border-color: var(--alarma); }
+.tarjeta__cab { display: flex; justify-content: space-between; align-items: flex-start; gap: .5rem; }
+.tarjeta__nombre { font: inherit; font-weight: 600; width: 100%; padding: .1rem 0; border: 0; border-bottom: 1px dashed #9aa7ad; background: transparent; color: var(--tinta); }
+.tarjeta .insignia { font-size: .75rem; padding: .2rem .6rem; white-space: nowrap; }
+.tarjeta .estante { padding-top: 2.2rem; }
+.tarjeta .baliza { width: 1.5rem; height: 1.5rem; right: .6rem; }
+.tarjeta .estante__patas { height: 1.1rem; }
+.tarjeta .balanza { margin-top: .6rem; }
+.tarjeta .balanza__valor { font-size: 1.6rem; }
+.tarjeta .botones { margin: .7rem 0 0; }
+.tarjeta .btn { padding: .35rem .7rem; font-size: .85rem; }

@@ -1,4 +1,4 @@
-import type { Caja } from '../../hooks/useShelf';
+import type { Caja } from '../../hooks/useAlmacen';
 
 interface Props { cajas: Caja[]; peligro: boolean }
 

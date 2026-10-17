@@ -11,7 +11,7 @@ export function RequestLog({ entradas }: { entradas: EntradaLog[] }) {
         <li key={e.id}>
           <span className={`estado estado--${clase(e.status)}`}>{e.status || 'sin red'}</span>
           <span className="log__texto">{e.mensaje}</span>
-          <span className="nota">{e.hora} · stock {e.stockFisico}</span>
+          <span className="nota">{e.sensorId} · {e.producto} · stock {e.stockFisico} · {e.hora}</span>
         </li>
       ))}
     </ul>

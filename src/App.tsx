@@ -1,36 +1,37 @@
-import { Shelf } from './components/shelf/Shelf';
-import { ScaleDisplay } from './components/shelf/ScaleDisplay';
-import { ControlPanel } from './components/controls/ControlPanel';
+import { ShelfCard } from './components/shelf/ShelfCard';
 import { RequestLog } from './components/log/RequestLog';
-import { useShelf, PESO_UNITARIO_KG, UMBRAL_MINIMO, CAPACIDAD } from './hooks/useShelf';
+import { ESTANTERIAS } from './config/estanterias';
+import { useAlmacen } from './hooks/useAlmacen';
 
 export default function App() {
-  const s = useShelf();
-  const ultima = s.entradas[0];
-  const estado = !s.enPeligro
-    ? 'Stock normal'
-    : ultima ? `Señal enviada (${ultima.status || 'sin red'})` : 'Peso crítico';
+  const a = useAlmacen();
+  const criticas = a.estados.filter((e) => e.enPeligro).length;
 
   return (
     <main className="app">
       <header className="cabecera">
-        <h1>Estantería virtual</h1>
-        <p className={`insignia ${s.enPeligro ? 'insignia--peligro' : ''}`}>{estado}</p>
+        <h1>Estanterías virtuales</h1>
+        <div className="resumen">
+          <label className="check">
+            <input type="checkbox" checked={a.auto} onChange={(e) => a.setAuto(e.target.checked)} />
+            Enviar señales solas
+          </label>
+          <button className="btn" onClick={a.reiniciarTodo}>Reiniciar todas</button>
+          <p className={`insignia ${criticas > 0 ? 'insignia--peligro' : ''}`}>
+            {criticas} de {ESTANTERIAS.length} en peso crítico
+          </p>
+        </div>
       </header>
       <div className="rejilla">
-        <div className="escena">
-          <Shelf cajas={s.cajas} peligro={s.enPeligro} />
-          <ScaleDisplay pesoKg={s.pesoKg} pesoMaxKg={CAPACIDAD * PESO_UNITARIO_KG}
-            pesoPeligroKg={(UMBRAL_MINIMO + 0.5) * PESO_UNITARIO_KG} peligro={s.enPeligro} />
-        </div>
-        <div className="lateral">
-          <ControlPanel producto={s.producto} onProducto={s.setProducto} auto={s.auto} onAuto={s.setAuto}
-            enviando={s.enviando} puedeSacar={s.puedeSacar} puedeReponer={s.puedeReponer}
-            onSacar={s.sacarCaja} onReponer={s.reponerCaja} onEnviar={s.enviarAhora} />
-          <h2>Respuestas del backend</h2>
-          <RequestLog entradas={s.entradas} />
-        </div>
+        {a.estados.map((e, i) => (
+          <ShelfCard key={e.cfg.id} estado={e}
+            ultima={a.entradas.find((x) => x.sensorId === e.cfg.sensorId)}
+            onProducto={(v) => a.setProducto(i, v)} onSacar={() => a.sacarCaja(i)}
+            onReponer={() => a.reponerCaja(i)} onEnviar={() => a.enviarAhora(i)} />
+        ))}
       </div>
+      <h2 className="seccion">Respuestas del backend</h2>
+      <RequestLog entradas={a.entradas} />
     </main>
   );
 }
